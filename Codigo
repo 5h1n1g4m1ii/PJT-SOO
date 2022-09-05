@@ -1,0 +1,128 @@
+package com.mycompany.pjt_soo;
+
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class PJT_SOO {
+
+public static void main(String[] args) {
+		        Scanner scanner = new Scanner(System.in);
+
+	Double tmpMedioexe, tmpMedioE;
+	ArrayList cpburst, cpc, prc, burst, chegada; 
+        String ordem;
+        int tpmEX[], burstnv, qntprc, tmpfn[], q, exe, tmpAt, entd, N, qtm, turnaround;
+        int conttst = 0;
+        String frmt, saida;
+        DecimalFormat dcm = new DecimalFormat("0.00");
+		
+		System.out.println("Quantos processos serao ?");
+		N = scanner.nextInt();
+		System.out.println("Quantos processos serao ?");
+        qtm = scanner.nextInt();
+
+        while (N != 0) {
+
+            conttst++;
+            prc = new ArrayList();
+             chegada = new ArrayList();
+              burst = new ArrayList();
+               ordem = "";
+                qntprc = N;
+                tmpfn = new int [N];
+                tpmEX = new int [N];
+
+         for (int i = 0 ; i < N; i++){
+      
+         System.out.println("Qual o tempo de chegada do p" + (i+1));
+          entd = scanner.nextInt();
+           chegada.add(entd);
+         System.out.println("Qual o burst do P" + (i + i));
+          entd = scanner.nextInt();
+           burst.add(entd);  
+
+         }
+
+         cpc = (ArrayList) chegada.clone();
+          cpburst = (ArrayList) burst.clone();
+           tmpAt = (int) chegada.get(0);
+            prc = new ArrayList();
+            prc = new ArrayList();
+
+            while (qntprc > 0){
+
+                for (int i = 0; i < N; i++) {
+                    if ((int)chegada.get(i) != -1 && (int) chegada.get(i) <= tmpAt){
+
+                        prc.add(i);
+                        chegada.set(i, -1);
+                    }
+                }
+
+                if (prc.isEmpty()) {
+                    tmpAt++;
+                } else {
+                    exe = (int) prc.remove(0);
+                     ordem += "p" + (exe + 1) + "";
+                      q = qtm;
+                       while (q > 0 && (int) burst.get(exe) > 0) {
+                        tmpAt++;
+                         q--;
+                          burstnv = (int) burst.get(exe) - 1;
+                           burst.set(exe, burstnv);
+                       }
+                         if ((int) burst.get(exe) > 0) {
+                            for (int i = 0 ; i < N; i++) {
+                                if ((int) chegada.get(i) != -1 && (int) chegada.get(i) <= tmpAt){
+                                    prc.add(i);
+                                     chegada.set(i, -1);
+
+                                }
+                            }
+
+                         prc.add(exe);
+
+                         } else {
+                            tmpfn[exe] = tmpAt;
+                            qntprc--;
+                         }
+                }
+            }
+          tmpMedioexe = 0.0;
+           tmpMedioE = 0.0;
+          for (int i = 0; i < N; i++){
+            tpmEX[i] = tmpfn[i]- (int) cpc.get(i);
+             tmpMedioexe += tpmEX[i];
+              tmpMedioE += tpmEX[i] - (int) cpburst.get(i);
+          }
+
+            tmpMedioexe = tmpMedioexe / N;
+             tmpMedioE = tmpMedioE / N;
+              System.out.println("Processamento - Part" + conttst);
+
+          for (int i = 0; i < N; i++) {
+             turnaround = (int) tmpfn[i] - (int) cpc.get(i);
+              frmt = dcm.format(turnaround);
+               saida = "|Turnaround| P" + i + ": " + frmt + "ms";
+                saida = saida.replace(".", ",");
+                 System.out.println(saida);
+          }   
+          
+          frmt = dcm.format (tmpMedioexe);
+           saida = "Tempo medio de execucao:" + frmt + "a";
+            saida = saida.replace(".", ",");
+             System.out.println(saida);
+
+             System.out.println(ordem);
+              System.out.println();
+               System.out.println("Quer trabalhar com quantos processos");
+                N = scanner.nextInt();
+
+
+        }
+
+	}
+
+}
